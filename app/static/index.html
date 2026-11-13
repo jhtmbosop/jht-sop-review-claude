@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>喬山 SOP 自評與審核系統</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1c2333;--muted:#667085;--line:#dfe3ea;--brand:#1f3a68;--brand-soft:#e8eef8;
+--crit:#b42318;--high:#c4520a;--mid:#946200;--low:#667085;--ok:#18794e;--warn-bg:#fff7e6;--radius:10px}
+@media (prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b202b;--ink:#e6e9ef;--muted:#98a2b3;--line:#2c3443;--brand:#8fb3ee;--brand-soft:#232c3d;
+--crit:#ff8a80;--high:#ffab70;--mid:#e6c35c;--low:#98a2b3;--ok:#5fd39b;--warn-bg:#2d2616}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,"Segoe UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px}
+header .in,main{max-width:980px;margin:0 auto}
+h1{font-size:19px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:13px}
+main{padding:16px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:999px;cursor:pointer;font:inherit}
+.tab[aria-selected=true]{background:var(--brand);color:var(--card);border-color:var(--brand);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 4px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+label{display:block;font-weight:600;font-size:13.5px;margin:12px 0 4px}
+label small{font-weight:400;color:var(--muted)}
+input[type=text],select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:96px;resize:vertical}
+input[type=file]{width:100%;padding:14px;border:1.5px dashed var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0 14px}
+button.go{margin-top:16px;background:var(--brand);color:var(--card);border:0;border-radius:8px;padding:11px 22px;font:inherit;font-weight:600;cursor:pointer}
+button.go:disabled{opacity:.5;cursor:default}
+button.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+.status{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--brand-soft);border-radius:8px;margin-top:14px}
+.spin{width:16px;height:16px;border:2.5px solid var(--brand);border-right-color:transparent;border-radius:50%;animation:s 0.8s linear infinite;flex:none}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{padding:12px 14px;background:var(--warn-bg);border-left:4px solid var(--crit);border-radius:6px;margin-top:14px}
+.note{padding:10px 14px;background:var(--warn-bg);border-left:4px solid var(--mid);border-radius:6px;margin:10px 0;font-size:13.5px}
+.dl{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.dl a{display:inline-block;background:var(--ok);color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600}
+.verdict{font-size:18px;font-weight:700;margin:2px 0 8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px}
+.sev-重大{color:var(--crit)}.sev-高{color:var(--high)}.sev-中{color:var(--mid)}.sev-低{color:var(--low)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--brand-soft)}
+.tw{overflow-x:auto}
+details.f{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:var(--bg)}
+details.f summary{cursor:pointer;padding:10px 12px;font-weight:600;list-style-position:inside}
+details.f .b{padding:0 14px 12px}
+details.f dt{font-weight:600;font-size:13px;color:var(--muted);margin-top:10px}
+details.f dd{margin:2px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+blockquote{margin:4px 0;padding:6px 10px;border-left:3px solid var(--brand);background:var(--card);border-radius:0 6px 6px 0;overflow-wrap:anywhere}
+blockquote small{color:var(--muted)}
+.sug{background:var(--card);border:1px dashed var(--ok);border-radius:6px;padding:8px 10px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>喬山 SOP 自評與審核系統</h1>
+  <p>依 TT-QP-CO-216 與集團 SOP 標準範本 ・ <span id="model">Claude</span></p>
+</div></header>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="draft" aria-selected="true">① 參考資料生成 SOP 草稿</button>
+    <button class="tab" role="tab" data-tab="self" aria-selected="false">② SOP 快速自評</button>
+    <button class="tab" role="tab" data-tab="audit" aria-selected="false">③ SOP 審核工作台</button>
+  </div>
+  <div id="keywarn" class="note" hidden>伺服器尚未設定 ANTHROPIC_API_KEY，送出後會失敗。請管理者先完成設定。</div>
+
+  <section id="p-draft" class="card">
+    <h2>參考資料生成 SOP 草稿</h2>
+    <p class="hint">上傳現有的作業說明、會議紀錄、舊版文件或直接貼上文字，系統會整理成集團標準格式的 Word 草稿。資料中沒有的期限、核准者、表單編號不會被自動補上，而是標示為【待確認】並列成清單。</p>
+    <form id="f-draft">
+      <div class="row">
+        <div><label>SOP 主題</label><input type="text" name="title" required placeholder="例：子公司固定資產報廢作業"></div>
+        <div><label>SOP 類別</label><select name="sop_type" required>
+          <option value="">請選擇</option>
+          <option>Group Critical SOP</option><option>Affiliate Critical SOP</option>
+          <option>HQ Local SOP</option><option>Affiliate Local SOP</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>制定單位 <small>選填</small></label><input type="text" name="department" placeholder="例：總部財務處"></div>
+        <div><label>文件編號 <small>選填</small></label><input type="text" name="control_number" placeholder="例：TT-QP-FN-012"></div>
+        <div><label>制定人 <small>選填</small></label><input type="text" name="prepared_by"></div>
+        <div><label>核准人 <small>選填，未填則沿用範本</small></label><input type="text" name="approved_by"></div>
+      </div>
+      <label>參考資料檔案 <small>DOCX／PDF／TXT，最多 10 個</small></label>
+      <input type="file" name="files" multiple accept=".docx,.pdf,.doc,.txt,.md">
+      <label>或直接貼上參考內容 <small>選填</small></label>
+      <textarea name="ref_text" placeholder="貼上現行做法、流程說明、往來郵件重點…"></textarea>
+      <label>補充說明 <small>選填：適用對象、想強調的管制重點、已確定的期限或核准層級</small></label>
+      <textarea name="instructions"></textarea>
+      <button class="go">生成草稿</button>
+    </form>
+    <div class="out"></div>
+  </section>
+
+  <section id="p-self" class="card" hidden>
+    <h2>SOP 快速自評</h2>
+    <p class="hint">送審前先自我檢查。上傳草稿，系統依正式審核的同一套標準列出問題與可直接採用的修正條文。</p>
+    <form id="f-self">
+      <label>SOP 草稿 <small>DOCX 或 PDF</small></label>
+      <input type="file" name="file" required accept=".docx,.pdf,.doc">
+      <label>SOP 類別</label>
+      <select name="sop_type"><option>自動判定</option><option>Group Critical SOP</option><option>Affiliate Critical SOP</option><option>HQ Local SOP</option><option>Affiliate Local SOP</option></select>
+      <input type="hidden" name="mode" value="self">
+      <button class="go">開始自評</button>
+    </form>
+    <div class="out"></div>
+  </section>
+
+  <section id="p-audit" class="card" hidden>
+    <h2>SOP 審核工作台</h2>
+    <p class="hint">總部經管正式審核用。系統完成初審後會逐字比對每段引文，再由第二輪覆核剔除站不住腳的意見，輸出 Word 審核報告與 Excel 缺失追蹤表。</p>
+    <form id="f-audit">
+      <label>送審 SOP <small>DOCX 或 PDF；PDF 可保留版面與頁碼，表格與流程圖的判讀較準</small></label>
+      <input type="file" name="file" required accept=".docx,.pdf,.doc">
+      <label>SOP 類別</label>
+      <select name="sop_type"><option>自動判定</option><option>Group Critical SOP</option><option>Affiliate Critical SOP</option><option>HQ Local SOP</option><option>Affiliate Local SOP</option></select>
+      <label>審核補充說明 <small>選填：本次審核重點、對應的 Group Critical SOP、已知背景</small></label>
+      <textarea name="notes"></textarea>
+      <input type="hidden" name="mode" value="audit">
+      <button class="go">開始審核</button>
+    </form>
+    <div class="out"></div>
+  </section>
+</main>
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
+  for (const k of ["draft", "self", "audit"]) $("#p-" + k).hidden = k !== t.dataset.tab;
+});
+fetch("api/health").then(r => r.json()).then(h => {
+  $("#model").textContent = "模型 " + h.model;
+  $("#keywarn").hidden = h.api_key_configured;
+}).catch(() => {});
+
+async function submit(form, url, out) {
+  const btn = $("button.go", form);
+  btn.disabled = true;
+  out.innerHTML = '<div class="status"><div class="spin"></div><span>上傳中…</span></div>';
+  try {
+    const r = await fetch(url, {method: "POST", body: new FormData(form)});
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || "送出失敗");
+    await poll(j.job_id, out);
+  } catch (e) {
+    out.innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  } finally { btn.disabled = false; }
+}
+async function poll(id, out) {
+  const t0 = Date.now();
+  for (;;) {
+    const r = await fetch("api/jobs/" + id);
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || "查詢進度失敗");
+    if (j.status === "done") { out.innerHTML = j.result.kind === "draft" ? draftView(id, j.result) : reviewView(id, j.result); bind(out, id); return; }
+    if (j.status === "error") throw new Error(j.error);
+    const sec = Math.round((Date.now() - t0) / 1000);
+    out.innerHTML = `<div class="status"><div class="spin"></div><span>${esc(j.progress)}　已 ${sec} 秒</span></div>`;
+    await new Promise(r => setTimeout(r, 2500));
+  }
+}
+const links = (id, files) => `<div class="dl">${files.map(f => `<a href="api/jobs/${id}/files/${encodeURIComponent(f)}">下載 ${esc(f)}</a>`).join("")}</div>`;
+const notes = w => (w || []).map(x => `<div class="note">${esc(x)}</div>`).join("");
+
+function draftView(id, r) {
+  const d = r.draft, q = d.open_questions || [];
+  return `<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <div class="verdict">草稿已完成：${esc(d.title_zh)}</div>
+  <p>${esc(d.source_summary)}</p>${links(id, r.files)}${notes(r.warnings)}
+  <h2>待確認事項（${q.length} 項，草稿中共 ${r.placeholders} 處【待確認】）</h2>
+  <p class="hint">這些是參考資料中沒有、但 SOP 需要的內容。請向相關單位確認後直接在 Word 檔中補上。</p>
+  ${q.length ? `<div class="tw"><table><tr><th>條文</th><th>需確認事項</th><th>原因</th></tr>${q.map(x => `<tr><td>${esc(x.clause)}</td><td>${esc(x.question)}</td><td>${esc(x.reason)}</td></tr>`).join("")}</table></div>` : "<p>沒有待確認事項。</p>"}
+  <p><button class="ghost" data-selfcheck>對此草稿進行自評</button></p><div class="sub"></div>`;
+}
+function reviewView(id, r) {
+  const res = r.result, c = res.conclusion, m = res.meta;
+  const fs = res.findings.filter(f => f.status !== "不成立");
+  const bad = res.chapters.filter(x => x.status !== "符合");
+  return `<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <div class="verdict">${esc(c.verdict)}</div>
+  <div class="chips">${["重大","高","中","低"].map(s => `<span class="chip sev-${s}">${s} ${c.counts[s]}</span>`).join("")}
+    <span class="chip">送簽前必改 ${c.must_fix_ids.length}</span><span class="chip">參考分數 ${c.score}</span>
+    <span class="chip">${esc(m.sop_type)}</span><span class="chip">${esc(m.language)}</span></div>
+  <p>${esc(res.summary)}</p>${links(id, r.files)}${notes(r.warnings)}
+  ${res.priorities.length ? `<h2>優先處理</h2><ol>${res.priorities.map(p => `<li>${esc(p)}</li>`).join("")}</ol>` : ""}
+  <h2>標準格式檢查</h2>
+  ${bad.length ? `<div class="tw"><table><tr><th>項目</th><th>結果</th><th>說明</th></tr>${bad.map(x => `<tr><td>${esc(x.item)}</td><td>${esc(x.status)}</td><td>${esc(x.note)}</td></tr>`).join("")}</table></div>` : "<p>表頭、八大章節與修改對照表均符合。</p>"}
+  <h2>缺失明細（${fs.length}）</h2>
+  ${fs.map(f => `<details class="f"><summary><span class="sev-${f.severity}">［${f.severity}］</span> ${esc(f.id)}　${esc(f.title)}　<small>${esc(f.category)}・${esc(f.clause)}${f.must_fix ? "・必改" : ""}</small></summary><div class="b"><dl>
+    <dt>原文</dt><dd>${f.evidence.map(e => `<blockquote>${esc(e.quote)}<br><small>${e.page ? "第 " + e.page + " 頁・" : ""}${esc(e.line_id)}${e.verified ? "" : "　⚠ 未能逐字比對到原文，請人工核對"}</small></blockquote>`).join("")}</dd>
+    <dt>問題</dt><dd>${esc(f.problem)}</dd><dt>影響</dt><dd>${esc(f.impact)}</dd><dt>修正建議</dt><dd>${esc(f.recommendation)}</dd>
+    ${f.suggested_text_zh || f.suggested_text_en ? `<dt>建議條文</dt><dd><div class="sug">${esc([f.suggested_text_en, f.suggested_text_zh].filter(Boolean).join("\n"))}</div></dd>` : ""}
+    <dt>判斷性質</dt><dd>${esc(f.basis)}${f.verify_note ? "　｜　覆核：" + esc(f.verify_note) : ""}</dd></dl></div></details>`).join("") || "<p>未發現缺失。</p>"}
+  ${res.strengths.length ? `<h2>文件優點</h2><ul>${res.strengths.map(p => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}`;
+}
+function bind(out, id) {
+  const b = $("[data-selfcheck]", out);
+  if (b) b.onclick = async () => {
+    b.disabled = true;
+    const sub = $(".sub", out), fd = new FormData();
+    fd.set("from_job", id); fd.set("mode", "self");
+    sub.innerHTML = '<div class="status"><div class="spin"></div><span>送出中…</span></div>';
+    try {
+      const r = await fetch("api/review", {method: "POST", body: fd}), j = await r.json();
+      if (!r.ok) throw new Error(j.detail || "送出失敗");
+      await poll(j.job_id, sub);
+    } catch (e) { sub.innerHTML = `<div class="err">${esc(e.message)}</div>`; b.disabled = false; }
+  };
+}
+$("#f-draft").onsubmit = e => { e.preventDefault(); submit(e.target, "api/draft", $("#p-draft .out")); };
+$("#f-self").onsubmit = e => { e.preventDefault(); submit(e.target, "api/review", $("#p-self .out")); };
+$("#f-audit").onsubmit = e => { e.preventDefault(); submit(e.target, "api/review", $("#p-audit .out")); };
+</script>
+</body>
+</html>

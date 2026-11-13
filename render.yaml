@@ -1,0 +1,22 @@
+# Render Blueprint。若從 repo 根目錄部署，請在 Render 建立服務時將 Blueprint 路徑指向本檔，
+# 或直接建立 Web Service 並把 Root Directory 設為 render-sop-v2_claude。
+services:
+  - type: web
+    name: jht-sop-v2-claude
+    runtime: python
+    rootDir: render-sop-v2_claude
+    buildCommand: pip install -r requirements.txt
+    # 工作狀態存在記憶體中，請維持單一 worker、單一 instance
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: APP_USER
+        value: sop
+      - key: APP_PASSWORD
+        sync: false
+      - key: CLAUDE_MODEL
+        value: claude-opus-5-5
